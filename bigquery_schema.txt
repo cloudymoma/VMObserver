@@ -1,0 +1,173 @@
+[
+    {
+        "name": "run_date",
+        "type": "DATE",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "project_id",
+        "type": "STRING"
+    },
+    {
+        "name": "vm_id",
+        "type": "STRING"
+    },
+    {
+        "name": "creationTimestamp",
+        "type": "TIMESTAMP"
+    },
+    {
+        "name": "name",
+        "type": "STRING"
+    },
+    {
+        "name": "description",
+        "type": "STRING"
+    },
+    {
+        "name": "machineType",
+        "type": "STRING"
+    },
+    {
+        "name": "vmFamily",
+        "type": "STRING"
+    },
+    {
+        "name": "vmCpus",
+        "type": "INTEGER"
+    },
+    {
+        "name": "vmRamInGb",
+        "type": "FLOAT"
+    },
+    {
+        "name": "status",
+        "type": "STRING"
+    },
+    {
+        "name": "region",
+        "type": "STRING"
+    },
+    {
+        "name": "zone",
+        "type": "STRING"
+    },
+    {
+        "name": "networkInterfaces",
+        "type": "RECORD",
+        "fields": [
+            {
+                "name": "network",
+                "type": "STRING"
+            },
+            {
+                "name": "subnetwork",
+                "type": "STRING"
+            },
+            {
+                "name": "networkIP",
+                "type": "STRING"
+            },
+            {
+                "name": "name",
+                "type": "STRING"
+            },
+            {
+                "name": "natIP",
+                "type": "STRING"
+            },
+            {
+                "name": "networkTier",
+                "type": "STRING"
+            }
+        ],
+        "mode": "REPEATED"
+    },
+    {
+        "name": "disks",
+        "type": "RECORD",
+        "fields": [
+            {
+                "name": "type",
+                "type": "STRING"
+            },
+            {
+                "name": "mode",
+                "type": "STRING"
+            },
+            {
+                "name": "source",
+                "type": "STRING"
+            },
+            {
+                "name": "deviceName",
+                "type": "STRING"
+            },
+            {
+                "name": "index",
+                "type": "INTEGER"
+            },
+            {
+                "name": "boot",
+                "type": "BOOLEAN"
+            },
+            {
+                "name": "autoDelete",
+                "type": "BOOLEAN"
+            },
+            {
+                "name": "interface",
+                "type": "STRING"
+            },
+            {
+                "name": "diskSizeGb",
+                "type": "INTEGER"
+            }
+        ],
+        "mode": "REPEATED"
+    },
+    {
+        "name": "gpuType",
+        "type": "STRING"
+    },
+    {
+        "name": "gpuCount",
+        "type": "INTEGER"
+    },
+    {
+        "name": "serviceAccounts",
+        "type": "STRING"
+    },
+    {
+        "name": "onHostMaintenance",
+        "type": "STRING"
+    },
+    {
+        "name": "automaticRestart",
+        "type": "BOOLEAN"
+    },
+    {
+        "name": "preemptible",
+        "type": "BOOLEAN"
+    },
+    {
+        "name": "cpuPlatform",
+        "type": "STRING"
+    },
+    {
+        "name": "startRestricted",
+        "type": "BOOLEAN"
+    },
+    {
+        "name": "deletionProtection",
+        "type": "BOOLEAN"
+    },
+    {
+        "name": "lastStartTimestamp",
+        "type": "TIMESTAMP"
+    },
+    {
+        "name": "lastStopTimestamp",
+        "type": "TIMESTAMP"
+    }
+]

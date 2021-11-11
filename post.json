@@ -1,0 +1,4 @@
+{
+	"projects": ["<project_id>"],
+	"table_id": "<project_id>.<dataset>.<table>"
+}
