@@ -49,7 +49,7 @@ bq mk \
 	    gpuType,
 	    gpuCount
 	  FROM
-	    \`${PROJECT_ID}.${DATASET_NAME}.vm_info\`
+	    \`${PROJECT_ID}.${DATASET_NAME}.vm_info\`" \
 	${DATASET_NAME}.vm_table_ts
 
 bq mk \
@@ -69,7 +69,7 @@ bq mk \
     d.diskSizeGb as diskSizeGb
   FROM
     \`${PROJECT_ID}.${DATASET_NAME}.vm_info\`,
-    UNNEST(disks) AS d
+    UNNEST(disks) AS d" \
   ${DATASET_NAME}.disk_table_ts
 
 bq mk \
