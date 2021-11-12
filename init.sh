@@ -43,18 +43,13 @@ bq mk \
 	    machineType,
 	    vmFamily,
 	    name AS vmName,
+      status AS vmStatus,
 	    vmCpus AS cpu,
 	    vmRamInGb AS mem,
 	    gpuType,
 	    gpuCount
 	  FROM
 	    \`${PROJECT_ID}.${DATASET_NAME}.vm_info\`
-	  WHERE
-	    run_date = (
-	    SELECT
-	      MAX(run_date)
-	    FROM
-	      \`${PROJECT_ID}.${DATASET_NAME}.vm_info\`)" \
 	${DATASET_NAME}.vm_table_ts
 
 bq mk \
@@ -68,18 +63,13 @@ bq mk \
     zone,
     machineType,
     vmFamily,
+    status AS vmStatus,
     d.deviceName as diskName,
     d.type as diskType,
     d.diskSizeGb as diskSizeGb
   FROM
     \`${PROJECT_ID}.${DATASET_NAME}.vm_info\`,
     UNNEST(disks) AS d
-  WHERE
-    run_date = (
-    SELECT
-      MAX(run_date)
-    FROM
-      \`${PROJECT_ID}.${DATASET_NAME}.vm_info\`)" \
   ${DATASET_NAME}.disk_table_ts
 
 bq mk \
@@ -126,6 +116,7 @@ bq mk \
     region,
     zone,
     vmFamily,
+    vmStatus,
     count(vmName) as instance_count,
     SUM(cpu) AS cpu,
     SUM(mem) AS mem,
@@ -147,13 +138,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily),
+    vmFamily,
+    vmStatus),
   B AS (
   SELECT
     projectID,
     region,
     zone,
     vmFamily,
+    vmStatus,
     count(vmName) as instance_count,
     SUM(cpu) AS cpu,
     SUM(mem) AS mem,
@@ -174,13 +167,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily),
+    vmFamily,
+    vmStatus),
   C AS (
   SELECT
     projectID,
     region,
     zone,
     vmFamily,
+    vmStatus,
     count(vmName) as instance_count,
     SUM(cpu) AS cpu,
     SUM(mem) AS mem,
@@ -201,13 +196,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily),
+    vmFamily,
+    vmStatus),
   D AS (
   SELECT
     projectID,
     region,
     zone,
     vmFamily,
+    vmStatus,
     count(vmName) as instance_count,
     SUM(cpu) AS cpu,
     SUM(mem) AS mem,
@@ -228,13 +225,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily)
+    vmFamily,
+    vmStatus)
 SELECT
   A.time,
   A.projectID,
   A.region,
   A.zone,
   A.vmFamily,
+  A.vmStatus,
   (A.instance_count - B.instance_count  ) AS instance_count_change_1day,
   (A.cpu - B.cpu) AS cpu_change_1day,
   (A.mem - B.mem) AS mem_change_1day,
@@ -256,6 +255,7 @@ ON
   AND A.region=B.region
   AND A.zone=B.zone
   AND A.vmFamily=B.vmFamily
+  AND A.vmStatus=B.vmStatus
 LEFT JOIN
   C
 ON 
@@ -263,13 +263,15 @@ ON
   AND A.region=C.region
   AND A.zone=C.zone
   AND A.vmFamily=C.vmFamily
+  AND A.vmStatus=C.vmStatus
 LEFT JOIN
   D
 ON
   A.projectID=D.projectID
   AND A.region=D.region
   AND A.zone=D.zone
-  AND A.vmFamily=D.vmFamily" \
+  AND A.vmFamily=D.vmFamily
+  AND A.vmStatus=D.vmStatus" \
   ${DATASET_NAME}.vm_table_delta
 
 bq mk \
@@ -284,6 +286,7 @@ bq mk \
     region,
     zone,
     vmFamily,
+    vmStatus,
     SUM(diskSizeGb) as diskSizeGb
   FROM
     \`${PROJECT_ID}.${DATASET_NAME}.disk_table_ts\`
@@ -302,13 +305,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily),
+    vmFamily,
+    vmStatus),
   B AS (
   SELECT
     projectID,
     region,
     zone,
     vmFamily,
+    vmStatus,
     SUM(diskSizeGb) as diskSizeGb
   FROM
     \`${PROJECT_ID}.${DATASET_NAME}.disk_table_ts\`
@@ -326,13 +331,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily),
+    vmFamily,
+    vmStatus),
   C AS (
   SELECT
     projectID,
     region,
     zone,
     vmFamily,
+    vmStatus,
     SUM(diskSizeGb) as diskSizeGb
   FROM
     \`${PROJECT_ID}.${DATASET_NAME}.disk_table_ts\`
@@ -350,13 +357,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily),
+    vmFamily,
+    vmStatus),
   D AS (
   SELECT
     projectID,
     region,
     zone,
     vmFamily,
+    vmStatus,
     SUM(diskSizeGb) as diskSizeGb
   FROM
     \`${PROJECT_ID}.${DATASET_NAME}.disk_table_ts\`
@@ -374,13 +383,15 @@ bq mk \
     projectID,
     region,
     zone,
-    vmFamily)
+    vmFamily,
+    vmStatus)
 SELECT
   A.time,
   A.projectID,
   A.region,
   A.zone,
   A.vmFamily,
+  A.vmStatus,
   (A.diskSizeGb - B.diskSizeGb  ) AS diskSizeGb_change_1day,
   (A.diskSizeGb - C.diskSizeGb  ) AS diskSizeGb_change_7days,
   (A.diskSizeGb - D.diskSizeGb  ) AS diskSizeGb_change_30days
@@ -393,6 +404,7 @@ ON
   AND A.region=B.region
   AND A.zone=B.zone
   AND A.vmFamily=B.vmFamily
+  AND A.vmStatus=B.vmStatus
 LEFT JOIN
   C
 ON 
@@ -400,13 +412,15 @@ ON
   AND A.region=C.region
   AND A.zone=C.zone
   AND A.vmFamily=C.vmFamily
+  AND A.vmStatus=C.vmStatus
 LEFT JOIN
   D
 ON
   A.projectID=D.projectID
   AND A.region=D.region
   AND A.zone=D.zone
-  AND A.vmFamily=D.vmFamily" \
+  AND A.vmFamily=D.vmFamily
+  AND A.vmStatus=D.vmStatus" \
   ${DATASET_NAME}.disk_table_delta
 
 gcloud auth configure-docker
