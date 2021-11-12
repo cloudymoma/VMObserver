@@ -30,3 +30,6 @@ echo "cloud scheduler deleted"
 
 gcloud run services delete vmobserver --region=${REGION} --quiet
 echo "cloud run deleted"
+
+gcloud container images delete gcr.io/${PROJECT_ID}/vmobserver --quiet
+echo "container registry deleted"
